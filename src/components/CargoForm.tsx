@@ -1,7 +1,8 @@
 import React from 'react';
 import 'tailwindcss/tailwind.css';
 
-function CargoForm() {
+// eslint-disable-next-line react/function-component-definition
+const CargoForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('submit'); // eslint-disable-next-line no-console
@@ -23,6 +24,6 @@ function CargoForm() {
       </button>
     </form>
   );
-}
+};
 
 export default CargoForm;
