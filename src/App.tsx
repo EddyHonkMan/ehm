@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import AppBar from './AppBar';
 import 'tailwindcss/tailwind.css';
 import CargoForm from './components/CargoForm';
@@ -11,38 +12,15 @@ function Tailwind() {
   );
 }
 
-function App() {
-  console.log(window.ipcRenderer);
+interface helloProps {
+  isOpen?: boolean;
+  isSent?: boolean;
+  fromMain: string | null;
+  handleToggle?: () => void;
+  sendMessageToElectron?: () => void;
+}
 
-  const [isOpen, setOpen] = useState(false);
-  const [isSent, setSent] = useState(false);
-  const [fromMain, setFromMain] = useState<string | null>(null);
-
-  const handleToggle = () => {
-    if (isOpen) {
-      setOpen(false);
-      setSent(false);
-    } else {
-      setOpen(true);
-      setFromMain(null);
-    }
-  };
-  const sendMessageToElectron = () => {
-    if (window.Main) {
-      window.Main.sendMessage("Hello I'm from React World");
-    } else {
-      setFromMain('You are in a Browser, so no Electron functions are available');
-    }
-    setSent(true);
-  };
-
-  useEffect(() => {
-    if (isSent && window.Main)
-      window.Main.on('message', (message: string) => {
-        setFromMain(message);
-      });
-  }, [isSent]);
-
+const Hello: React.FC<helloProps> = ({ isOpen, isSent, fromMain, handleToggle, sendMessageToElectron }) => {
   return (
     <div className="flex flex-col h-screen">
       {window.Main && (
@@ -89,6 +67,56 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default function App() {
+  console.log(window.ipcRenderer);
+
+  const [isOpen, setOpen] = useState(false);
+  const [isSent, setSent] = useState(false);
+  const [fromMain, setFromMain] = useState<string | null>(null);
+
+  const handleToggle = () => {
+    if (isOpen) {
+      setOpen(false);
+      setSent(false);
+    } else {
+      setOpen(true);
+      setFromMain(null);
+    }
+  };
+  const sendMessageToElectron = () => {
+    if (window.Main) {
+      window.Main.sendMessage("Hello I'm from React World");
+    } else {
+      setFromMain('You are in a Browser, so no Electron functions are available');
+    }
+    setSent(true);
+  };
+
+  useEffect(() => {
+    if (isSent && window.Main)
+      window.Main.on('message', (message: string) => {
+        setFromMain(message);
+      });
+  }, [isSent]);
+
+  return (
+    <Router>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Hello
+              isSent={isSent}
+              isOpen={isOpen}
+              fromMain={fromMain}
+              handleToggle={handleToggle}
+              sendMessageToElectron={sendMessageToElectron}
+            />
+          }
+        />
+      </Routes>
+    </Router>
+  );
+}
