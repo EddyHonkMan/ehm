@@ -70,8 +70,6 @@ const Hello: React.FC<helloProps> = ({ isOpen, isSent, fromMain, handleToggle, s
 };
 
 export default function App() {
-  console.log(window.ipcRenderer);
-
   const [isOpen, setOpen] = useState(false);
   const [isSent, setSent] = useState(false);
   const [fromMain, setFromMain] = useState<string | null>(null);
