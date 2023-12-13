@@ -5,6 +5,8 @@ import { join } from 'path';
 import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron';
 import isDev from 'electron-is-dev';
 
+import MenuBuilder from './menu';
+
 const height = 800;
 const width = 1200;
 
@@ -49,6 +51,9 @@ function createWindow() {
   ipcMain.on('close', () => {
     window.close();
   });
+
+  const menuBuilder = new MenuBuilder(window);
+  menuBuilder.buildMenu();
 }
 
 // This method will be called when Electron has finished
